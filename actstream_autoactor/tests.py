@@ -3,16 +3,19 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
+from actstream import registry
+
 from mock import Mock
 
 from .middleware import SetActorMiddleware
-from .utils import actor_context, get_actor
+from .utils import actor_context, get_actor, action_send
 
 
 class CurrentActorTestCase(TestCase):
     """Testing the current actor."""
 
     def setUp(self):
+        registry.register(User)
         self.user1 = User.objects.create(username='user1')
         self.user2 = User.objects.create(username='user2')
 
@@ -42,3 +45,12 @@ class CurrentActorTestCase(TestCase):
             response,
         )
         self.assertEqual(get_actor(), None)
+
+    def test_action_send(self):
+        '''Test the action_send method.'''
+
+        with actor_context(self.user1):
+            action_send(verb='did something')
+
+        action = self.user1.actor_actions.all()[0]
+        self.assertEqual(action.actor, self.user1)

@@ -15,6 +15,7 @@ setup(
     install_requires=[
         'django',
         'django-autoconfig',
+        'django-activity-stream',
     ],
     tests_require=[
         'django-setuptest',

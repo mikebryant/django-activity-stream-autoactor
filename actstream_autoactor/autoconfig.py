@@ -5,6 +5,7 @@ from django_autoconfig.autoconfig import OrderingRelationship
 SETTINGS = {
     'INSTALLED_APPS': [
         'django.contrib.auth',
+        'actstream',
     ],
 
     'MIDDLEWARE_CLASSES': [
