@@ -11,6 +11,10 @@ SETTINGS = {
     'MIDDLEWARE_CLASSES': [
         'actstream_autoactor.middleware.SetActorMiddleware',
     ],
+
+    'SOUTH_MIGRATION_MODULES': {
+        'actstream_autoactor': 'actstream_autoactor.south_migrations',
+    },
 }
 
 RELATIONSHIPS = [
