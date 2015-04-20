@@ -7,9 +7,16 @@ ACTOR_STORAGE = threading.local()
 ACTOR_STORAGE.actor = None
 
 
+class AutoActorError(Exception):
+    pass
+
+
 def get_actor():
     '''Return the currently set actor.'''
-    return ACTOR_STORAGE.actor
+    actor = getattr(ACTOR_STORAGE, 'actor', None)
+    if not actor:
+        raise AutoActorError("Cannot retrieve actor before it's been set.")
+    return actor
 
 
 def set_actor(actor):
@@ -20,7 +27,10 @@ def set_actor(actor):
 @contextlib.contextmanager
 def actor_context(actor):
     '''Set the current actor as a context manager.'''
-    old_actor = get_actor()
+    try:
+        old_actor = get_actor()
+    except AutoActorError:
+        old_actor = None
     set_actor(actor)
     yield
     set_actor(old_actor)
