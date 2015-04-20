@@ -1,5 +1,7 @@
 '''actstream_autoactor utilities.'''
 
+from actstream import action
+
 import contextlib
 import threading
 
@@ -24,3 +26,9 @@ def actor_context(actor):
     set_actor(actor)
     yield
     set_actor(old_actor)
+
+
+def action_send(*args, **kwargs):
+    '''Send an action defaulting the actor to auto actor.'''
+    actor = kwargs.pop('actor', None) or get_actor()
+    return action.send(actor, *args, **kwargs)
