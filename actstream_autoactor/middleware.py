@@ -1,6 +1,9 @@
 '''actstream_autoactor middleware.'''
 
-from .utils import get_actor, set_actor, AutoActorError
+from django.contrib.contenttypes.models import ContentType
+
+from .models import AnonymousActor
+from .utils import get_actor, set_actor
 
 
 class SetActorMiddleware(object):
@@ -12,11 +15,10 @@ class SetActorMiddleware(object):
         '''
         Set the current actor.
         '''
-        try:
-            request.actstream_actor_old_actor = get_actor()
-        except AutoActorError:
-            request.actstream_actor_old_actor = None
-        if not request.user.is_anonymous():
+        request.actstream_actor_old_actor = get_actor()
+        if request.user.is_anonymous():
+            set_actor(ContentType.objects.get_for_model(AnonymousActor, for_concrete_model=False))
+        else:
             set_actor(request.user)
 
     def process_response(self, request, response):
