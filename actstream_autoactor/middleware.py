@@ -1,6 +1,6 @@
 '''actstream_autoactor middleware.'''
 
-from .utils import get_actor, set_actor
+from .utils import get_actor, set_actor, AutoActorError
 
 
 class SetActorMiddleware(object):
@@ -12,7 +12,10 @@ class SetActorMiddleware(object):
         '''
         Set the current actor.
         '''
-        request.actstream_actor_old_actor = get_actor()
+        try:
+            request.actstream_actor_old_actor = get_actor()
+        except AutoActorError:
+            request.actstream_actor_old_actor = None
         if not request.user.is_anonymous():
             set_actor(request.user)
 

@@ -8,7 +8,7 @@ from actstream import registry
 from mock import Mock
 
 from .middleware import SetActorMiddleware
-from .utils import actor_context, get_actor, action_send
+from .utils import action_send, actor_context, get_actor, AutoActorError
 
 
 class CurrentActorTestCase(TestCase):
@@ -22,12 +22,12 @@ class CurrentActorTestCase(TestCase):
     def test_context_manager(self):
         '''Test the context manager.'''
 
-        self.assertEqual(get_actor(), None)
+        self.assertRaises(AutoActorError, get_actor)
 
         with actor_context(self.user1):
             self.assertEqual(get_actor(), self.user1)
 
-        self.assertEqual(get_actor(), None)
+        self.assertRaises(AutoActorError, get_actor)
 
     def test_middleware(self):
         '''Test the middleware.'''
@@ -37,14 +37,14 @@ class CurrentActorTestCase(TestCase):
         request.user = self.user2
         response = Mock()
 
-        self.assertEqual(get_actor(), None)
+        self.assertRaises(AutoActorError, get_actor)
         self.assertEqual(context_manager.process_request(request), None)
         self.assertEqual(get_actor(), self.user2)
         self.assertEqual(
             context_manager.process_response(request, response),
             response,
         )
-        self.assertEqual(get_actor(), None)
+        self.assertRaises(AutoActorError, get_actor)
 
     def test_action_send(self):
         '''Test the action_send method.'''
