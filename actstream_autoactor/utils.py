@@ -11,6 +11,12 @@ from .models import UnknownActor
 ACTOR_STORAGE = threading.local()
 
 
+def clear_actor():
+    '''Clear the actor storage.'''
+    if hasattr(ACTOR_STORAGE, 'actor'):
+        del ACTOR_STORAGE.actor
+
+
 def get_actor():
     '''Return the currently set actor.'''
     actor = getattr(ACTOR_STORAGE, 'actor', ContentType.objects.get_for_model(UnknownActor, for_concrete_model=False))
