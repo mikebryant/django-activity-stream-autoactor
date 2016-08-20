@@ -10,7 +10,7 @@ setup(
     author='Mike Bryant',
     author_email='mike@mikebryant.me.uk',
     description='Automatic provision of actors for django-activity-stream',
-    long_description=open('README.rst').read(),
+    long_description=open('README.md').read(),
     url='https://github.com/mikebryant/django-activity-stream-autoactor/',
     install_requires=[
         'django',
